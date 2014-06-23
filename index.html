@@ -6,6 +6,7 @@
 #commits, #single-commit { display: none }
 .commits #commits, .single-commit #single-commit { display: block }
 </style>
+<script type="text/javascript" src="marked.js"></script>
 <script type="text/javascript">
 window.onload = function() {
 
@@ -38,7 +39,7 @@ window.onload = function() {
 
 				var li = document.createElement('li');
 				var a = document.createElement('a');
-				a.textContent = parts[1];
+				a.innerHTML = marked(parts[1]);
 				a.href = '?sha=' + commit.sha;
 				li.appendChild(a);
 				commits.appendChild(li);
@@ -52,8 +53,8 @@ window.onload = function() {
 		ajaj(base + '/commits/' + sha,
 			function (json) {
 				var parts = splitMessage(json.commit.message);
-				document.getElementById('commit-summary').textContent = parts[1];
-				document.getElementById('commit-message').textContent = parts[2];
+				document.getElementById('commit-summary').innerHTML = marked(parts[1]);
+				document.getElementById('commit-message').innerHTML = marked(parts[2]);
 
 				var diff = document.getElementById('diff');
 				json.files.forEach(function(file) {
@@ -81,7 +82,7 @@ window.onload = function() {
 
 	ajaj(base, function(json) {
 		document.getElementById('title').textContent = json.full_name;
-		document.getElementById('description').textContent = json.description;
+		document.getElementById('description').innerHTML = marked(json.description);
 	});
 
 	var searchParams = new URLSearchParams(window.location.search.replace(/^\?/, ''));
@@ -102,7 +103,7 @@ window.onload = function() {
 </ul>
 <div id="single-commit">
 	<h2 id="commit-summary"></h2>
-	<pre id="commit-message"></pre>
+	<div id="commit-message"></div>
 	<section id="diff"></section>
 </div>
 </body>
